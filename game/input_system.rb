@@ -1,9 +1,7 @@
-class InputSystem
-  attr_reader :handler
+require 'system'
 
-  def initialize(registry)
-    @registry = registry
-  end
+class InputSystem < System
+  attr_reader :handler
 
   def receive(input)
     receiver_component.input= input
@@ -23,10 +21,10 @@ class InputSystem
 
   private
     def receiver_component
-      @registry.find_components(InputReceiver).first.values.first
+      registry.find_components(InputReceiver).first.values.first
     end
 
     def receiver_message_components
-      @registry.find_components(InputReceiver, HasMessages).first.values
+      registry.find_components(InputReceiver, HasMessages).first.values
     end
 end

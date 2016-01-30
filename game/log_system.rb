@@ -1,17 +1,15 @@
-class LogSystem
-  attr_writer :input
-
-  def initialize(registry)
-    @registry = registry
-  end
-
+class LogSystem < System
   def run!
-    @registry.find(HasMessages).each do |entity|
-      messages = entity.components[HasMessages].messages
-      messages.each do |msg|
+    message_components.each do |(message_comp)|
+      message_comp.messages.each do |msg|
         puts msg
       end
-      messages.clear
+      message_comp.messages.clear
     end
   end
+
+  private
+    def message_components
+      registry.find_components(HasMessages).map(&:values)
+    end
 end

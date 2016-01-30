@@ -12,6 +12,7 @@ GEM
     byebug (8.2.1)
     coderay (1.1.0)
     debug_inspector (0.0.2)
+    geometry (6.5)
     gosu (0.10.4)
     i18n (0.7.0)
     json (1.8.3)
@@ -38,6 +39,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport
+  geometry
   gosu
   pry
   pry-byebug

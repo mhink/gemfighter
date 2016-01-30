@@ -4,8 +4,8 @@ class Window < Gosu::Window
   DELAY = 500 # ms
   KEY_INTERVAL = 70 #ms
 
-  def initialize
-    super(800, 600)
+  def initialize(size: Size[16,16])
+    super(*size.to_a)
     self.caption= "Gemfighter"
   end
 

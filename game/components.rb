@@ -8,4 +8,14 @@ module Components
   HasMessages = Component.with(:messages)
   HasSize = Component.with(:size)
   HasWindow = Component.with(:window)
+
+  class HasWindow
+    def window=(window)
+      if @window.nil?
+        @window = window
+      else
+        raise "HasWindow#window may only be set once!"
+      end
+    end
+  end
 end
