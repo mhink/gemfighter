@@ -8,8 +8,9 @@ class WindowSystem < System
   end
 
   def start(&block)
-    window = Window.new(size: size_component.size)
-    window_component.window= window
+    ent = window_entity
+    window = Window.new(size: ent.has_size.size)
+    ent.has_window.window= window
     @setup_callback.try(:call, window)
     window.show
   end
@@ -18,18 +19,10 @@ class WindowSystem < System
   end
 
   def stop
-    window_component.window.close
+    window_entity.has_window.window.close
   end
 
   private
-    def size_component
-      window_entity.components[HasSize]
-    end
-
-    def window_component
-      window_entity.components[HasWindow]
-    end
-
     def window_entity
       registry.find(HasSize, HasWindow).first
     end

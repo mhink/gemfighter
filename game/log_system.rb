@@ -1,15 +1,15 @@
 class LogSystem < System
   def run!
-    message_components.each do |(message_comp)|
-      message_comp.messages.each do |msg|
+    message_entities.each do |ent|
+      ent.has_messages.messages.each do |msg|
         puts msg
       end
-      message_comp.messages.clear
+      ent.has_messages.messages.clear
     end
   end
 
   private
-    def message_components
-      registry.find_components(HasMessages).map(&:values)
+    def message_entities
+      registry.find(HasMessages)
     end
 end

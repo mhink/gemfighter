@@ -4,12 +4,13 @@ class InputSystem < System
   attr_reader :handler
 
   def receive(input)
-    receiver_component.input= input
+    receiver_entity.input_receiver.input= input
   end
 
   def run!
-    input_comp, msg_comp = receiver_message_components
-    input, messages = input_comp.input, msg_comp.messages
+    ent = receiver_messages_entity
+    input_receiver, has_messages= ent.input_receiver, ent.has_messages
+    input, messages = input_receiver.input, has_messages.messages
 
     case input
     when nil then return
@@ -20,11 +21,11 @@ class InputSystem < System
   end
 
   private
-    def receiver_component
-      registry.find_components(InputReceiver).first.values.first
+    def receiver_entity
+      registry.find(InputReceiver).first
     end
 
-    def receiver_message_components
-      registry.find_components(InputReceiver, HasMessages).first.values
+    def receiver_messages_entity
+      registry.find(InputReceiver, HasMessages).first
     end
 end

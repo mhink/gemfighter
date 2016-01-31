@@ -6,7 +6,6 @@ require 'registry'
 class Game
   def initialize
     trap("INT") { exit 0 }
-    @registry = Registry.new
   end
 
   def start!
@@ -19,13 +18,11 @@ class Game
     puts ex
     puts ex.backtrace.first(5)
   ensure
-    shutdown
+    stop
     puts "Closed 'gemfighter' at #{Time.now.strftime("%s")}"
   end
 
   protected
-    attr_reader :registry
-
     def start
       # optional: implement in base class
     end

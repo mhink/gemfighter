@@ -12,6 +12,10 @@ WindowEntity = Entity(HasSize, HasWindow)
 PlayerEntity = Entity(InputReceiver, HasMessages)
 
 class Gemfighter < Game
+  def registry
+    @registry ||= Registry.new
+  end
+
   def initialize
     super
 
@@ -36,7 +40,7 @@ class Gemfighter < Game
       @window_system.start
     end
 
-    def shutdown
+    def stop
       @window_system.stop
     end
 end

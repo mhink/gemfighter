@@ -6,8 +6,8 @@ class Registry
   end
 
   def register(entity)
-    entity.components.each do |klass, _|
-      @register[klass] << entity
+    entity.components.each do |component|
+      @register[component.class] << entity
     end
   end
 
@@ -25,8 +25,8 @@ class Registry
 
   def find_components(*components)
     self.find(*components).map do |entity|
-      entity.components.select do |klass, component|
-        components.include? klass
+      entity.components.select do |component|
+        components.include?(component.class)
       end
     end
   end
