@@ -1,5 +1,14 @@
 require 'set'
 
+# This class is sort of a database for Entities. Anything with a handle
+# to a Registry can query it for Entities which are composed of certain
+# components. This allows a System to be almost completely decoupled from
+# the logic for managing entity lifecycles.
+#
+# Considering that this is basically a simple, in-memory database, future
+# development will likely involve storing Entities in an actual database-
+# likely SQLite.
+
 class Registry
   def initialize
     @register = Hash.new { |h, k| h[k] = Set.new }

@@ -1,12 +1,12 @@
 require 'game'
 
+require 'components'
 require 'window_system'
 require 'input_system'
 require 'log_system'
-require 'components'
 
-include Geometry
 include Components
+include Geometry
 
 WindowEntity = Entity(HasSize, HasWindow)
 PlayerEntity = Entity(InputReceiver, HasMessages)
@@ -22,6 +22,8 @@ class Gemfighter < Game
     WindowEntity.create(registry, size: Size[800,600], window: nil)
     PlayerEntity.create(registry, messages: [])
 
+    @input_system  = InputSystem.new(registry)
+    @log_system    = LogSystem.new(registry)
     @window_system = WindowSystem.new(registry) do |window|
       window.on_update do |input|
         @input_system.receive(input)
@@ -30,9 +32,6 @@ class Gemfighter < Game
         true
       end
     end
-
-    @input_system = InputSystem.new(registry)
-    @log_system = LogSystem.new(registry)
   end
 
   protected

@@ -1,23 +1,33 @@
 #! /usr/bin/env ruby
 
-require 'rubygems'
-require 'bundler/setup'
-Bundler.require :default
-require 'pry'
+require_relative "config/environment"
 
-require 'active_support'
-require 'active_support/core_ext'
-
-BASE_DIR = Pathname.new(File.dirname(__FILE__))
-LIB_DIR  = BASE_DIR.join("lib")
-GAME_DIR = BASE_DIR.join("game")
-
-$LOAD_PATH.unshift(LIB_DIR) unless $LOAD_PATH.include?(LIB_DIR)
-$LOAD_PATH.unshift(GAME_DIR) unless $LOAD_PATH.include?(GAME_DIR)
+DB = Sequel.sqlite
 
 require 'gemfighter'
 
+DB.create_table :entities do
+  primary_key :id
+end
+
+DB.create_table :size_components do
+  primary_key :id
+  foreign_key :entity_id, :entities, 
+    :null       => false,
+    :on_delete  => :cascade, 
+    :index      => true
+end
+
+task :test do
+  puts "Loaded environment!"
+end
+
 task :console do
+  items = DB[:items]
+  items.insert(:name => 'foo')
+  items.insert(:name => 'bar')
+  items.insert(:name => 'baz')
+
   binding.pry
 end
 
