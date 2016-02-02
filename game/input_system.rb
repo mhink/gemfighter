@@ -1,31 +1,18 @@
-require 'system'
-
-class InputSystem < System
-  attr_reader :handler
-
-  def receive(input)
-    receiver_entity.input_receiver.input= input
-  end
-
+class InputSystem
   def run!
-    ent = receiver_messages_entity
-    input_receiver, has_messages= ent.input_receiver, ent.has_messages
-    input, messages = input_receiver.input, has_messages.messages
+    input = window_entity.window.active_input
 
-    case input
-    when nil then return
-    when "q" then throw(:game_end)
-    else
-      messages << "Got #{input}"
+    input_entities.each do |entity|
+      entity.input = input
     end
   end
 
   private
-    def receiver_entity
-      registry.find(InputReceiver).first
+    def window_entity
+      Entity.instances_with(:@window).first
     end
 
-    def receiver_messages_entity
-      registry.find(InputReceiver, HasMessages).first
+    def input_entities
+      Entity.instances_with(:@input)
     end
 end

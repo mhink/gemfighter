@@ -8,6 +8,7 @@ task :test do
 end
 
 task :console do
+  e = Entity.new(foo: "bar")
   binding.pry
 end
 

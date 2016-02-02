@@ -4,6 +4,12 @@ class Window < Gosu::Window
   DELAY = 500 # ms
   KEY_INTERVAL = 70 #ms
 
+  attr_reader :active_key
+
+  def active_input
+    button_id_to_char(@active_key)
+  end
+
   def initialize(size: Size[16,16])
     super(*size.to_a)
     self.caption= "Gemfighter"

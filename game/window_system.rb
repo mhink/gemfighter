@@ -1,28 +1,37 @@
 require 'window'
-require 'system'
 
-class WindowSystem < System
-  def initialize(registry, &block)
-    super(registry)
+class WindowSystem
+  def initialize(&block)
     @setup_callback= block
   end
 
-  def start(&block)
-    window = Window.new(size: window_entity.has_size.size)
-    window_entity.has_window.window= window
-    @setup_callback.try(:call, window)
-    window.show
+  def start
+    wnd = Window.new(size: window_entity.size)
+    window_entity.window = wnd
+    @setup_callback.try(:call, wnd)
+    wnd.show
   end
 
   def run!
   end
 
   def stop
-    window_entity.has_window.window.close
+    window_entity.window.close
   end
 
   private
     def window_entity
-      registry.find(HasSize, HasWindow).first
+      entities = Entity.find_all do |entity|
+        entity.instance_variable_defined?(:@size) &&
+        entity.instance_variable_defined?(:@window)
+      end
+
+      if(entities.length > 1)
+        raise "Found more than one entity with @window!"
+      elsif(entities.length < 1)
+        raise "Did not find any entities with @window!"
+      else
+        entities.first
+      end
     end
 end

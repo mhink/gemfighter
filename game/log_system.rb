@@ -1,15 +1,17 @@
-class LogSystem < System
+class LogSystem
   def run!
     message_entities.each do |ent|
-      ent.has_messages.messages.each do |msg|
+      ent.messages.each do |msg|
         puts msg
       end
-      ent.has_messages.messages.clear
+      ent.messages.clear
     end
   end
 
   private
     def message_entities
-      registry.find(HasMessages)
+      Entity.find_all do |entity|
+        entity.instance_variable_defined?(:@messages)
+      end
     end
 end
