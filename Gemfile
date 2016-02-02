@@ -5,6 +5,7 @@ gem 'activesupport'
 gem 'sqlite3'
 gem 'sequel'
 
+gem 'bitset'
 gem 'geometry'
 gem 'gosu'
 gem 'pry'
