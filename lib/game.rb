@@ -1,7 +1,5 @@
 require 'entity'
-require 'component'
 require 'window'
-require 'registry'
 
 class Game
   def initialize

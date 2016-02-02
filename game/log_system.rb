@@ -10,8 +10,6 @@ class LogSystem
 
   private
     def message_entities
-      Entity.find_all do |entity|
-        entity.instance_variable_defined?(:@messages)
-      end
+      Entity.instances_with(:@messages)
     end
 end
