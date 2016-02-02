@@ -45,7 +45,6 @@ class Entity < Object
       super
     end
   rescue Exception => ex
-    binding.pry
     raise ex
   end
 

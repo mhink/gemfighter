@@ -13,6 +13,8 @@ class Window < Gosu::Window
   def initialize(size: Size[16,16])
     super(*size.to_a)
     self.caption= "Gemfighter"
+    @needs_redraw = true
+    @active_key = nil
   end
 
   def on_update(&block)
