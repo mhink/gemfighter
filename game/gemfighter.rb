@@ -14,11 +14,16 @@ class Gemfighter < Game
   def initialize
     super
 
-    puts "Initializing entities..."
-    Gosu::Image.load_tiles(RES_DIR.join("onoff-16.png").to_s, 16, 16).each_with_index do |img, ix|
+    tiles = Gosu::Image.load_tiles(
+        RES_DIR.join("tiled-icons-16x16.png").to_s, 
+        16, 16,
+        retro: true).zip([:guy, :rat, :wall, :sign, :meat])
+
+    tiles.each_with_index do |(img, name), ix|
       # Create an Entity for each tile
       Entity.new(tile_index: ix, 
-                 tile_image: img)
+                 tile_image: img,
+                 tile_name: name)
     end
 
     # The input channel!
@@ -27,16 +32,16 @@ class Gemfighter < Game
     # A little proto-player entity.
     Entity.new(visible:    true,
                tile_index: 0,
+               scale: Vector[2,2],
                movement:   nil,
                position:   Point[1,1])
 
     # The window itself
     Entity.new(window:     nil,
-               grid_size:  Size[16,16],
-               size:       Size[800, 600], 
-               size_tiles: Size[50, 37])
+               grid_size:  Size[32,32],
+               size:       Size[800,600], 
+               size_tiles: Size[25,18])
 
-    puts "Initializing systems..."
     WindowSystem.on_update do
       InputSystem.run!
       MovementInputSystem.run!

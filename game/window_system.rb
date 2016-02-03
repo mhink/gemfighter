@@ -27,11 +27,18 @@ module WindowSystem
   def run!
     drawables = drawable_entities
     tiles = tile_entities
+    window = window_entity
+
+    font = Gosu::Font.new(12, name: "Arial")
 
     drawables.each do |entity|
       x, y = entity.position.to_a
-      tile_image = tiles[entity.tile_index].tile_image
-      tile_image.draw(entity.position.x * 16, entity.position.y * 16, 0)
+      tx, ty = window.grid_size.to_a
+      sx, sy = (entity.scale.nil? ? [1,1] : entity.scale.to_a)
+      tile = tiles[entity.tile_index]
+      tile_image = tile.tile_image
+      tile_image.draw((x * tx), (y * ty), 0, sx, sy)
+      font.draw(tile.tile_index.to_s, (x * tx), (y * ty), 0)
     end
   end
 
