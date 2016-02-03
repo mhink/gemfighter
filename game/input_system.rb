@@ -1,4 +1,5 @@
-class InputSystem
+module InputSystem
+  class << self
   def run!
     input = window_entity.window.active_input
 
@@ -15,4 +16,5 @@ class InputSystem
     def input_entities
       Entity.instances_with(:@input)
     end
+  end
 end

@@ -37,34 +37,27 @@ class Gemfighter < Game
                size_tiles: Size[50, 37])
 
     puts "Initializing systems..."
-    @input_system    = InputSystem.new
-    @movement_input_system = MovementInputSystem.new
-    @movement_system = MovementSystem.new
-    @log_system      = LogSystem.new
-    @shutdown_system = ShutdownSystem.new
+    WindowSystem.on_update do
+      InputSystem.run!
+      MovementInputSystem.run!
+      MapSystem.run!
+      MovementSystem.run!
+      LogSystem.run!
+      ShutdownSystem.run!
+      true
+    end
 
-    @window_system   = WindowSystem.new do |window|
-      window.on_update do |input|
-        @input_system.run!
-        @movement_input_system.run!
-        @movement_system.run!
-        @log_system.run!
-        @shutdown_system.run!
-        true
-      end
-
-      window.on_draw do
-        @window_system.run!
-      end
+    WindowSystem.on_draw do
+      WindowSystem.run!
     end
   end
 
   protected
     def start
-      @window_system.start
+      WindowSystem.start
     end
 
     def stop
-      @window_system.stop
+      WindowSystem.stop
     end
 end

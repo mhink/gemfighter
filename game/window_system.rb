@@ -1,14 +1,20 @@
 require 'window'
 
-class WindowSystem
-  def initialize(&block)
-    @setup_callback= block
+module WindowSystem
+  class << self
+  def on_update(&block)
+    @on_update_callback = block
+  end
+
+  def on_draw(&block)
+    @on_draw_callback = block
   end
 
   def start
     wnd = Window.new(size: window_entity.size)
     window_entity.window = wnd
-    @setup_callback.try(:call, wnd)
+    wnd.on_update(&@on_update_callback)
+    wnd.on_draw(&@on_draw_callback)
     wnd.show
   end
 
@@ -47,4 +53,5 @@ class WindowSystem
     def drawable_entities
       Entity.instances_with(:@visible, :@tile_index, :@position)
     end
+  end
 end

@@ -1,4 +1,5 @@
-class MovementSystem
+module MovementSystem
+  class << self
   def run!
     position_movement_entities.each do |entity|
       next unless entity.movement
@@ -15,4 +16,5 @@ class MovementSystem
     def position_movement_entities
       Entity.instances_with(:@position, :@movement)
     end
+  end
 end

@@ -1,4 +1,5 @@
-class ShutdownSystem
+module ShutdownSystem
+  class << self
   def run!
     if shutdown_entity.input == "q"
       throw(:game_end)
@@ -9,4 +10,5 @@ class ShutdownSystem
     def shutdown_entity
       Entity.instances_with(:@input).first
     end
+  end
 end

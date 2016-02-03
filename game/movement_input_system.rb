@@ -1,4 +1,5 @@
-class MovementInputSystem
+module MovementInputSystem
+  class << self
   def run!
     case input_entity.input
     when "h" then move_by(Vector[-1,0])
@@ -13,14 +14,14 @@ class MovementInputSystem
     end
   end
 
-  private
-    def move_by(vector)
-      movement_entities.each do |entity|
-        entity.movement= vector
-        entity.try(:messages).try(:<<, "Moved #{vector}")
-      end
+  def move_by(vector)
+    movement_entities.each do |entity|
+      entity.movement= vector
+      entity.try(:messages).try(:<<, "Moved #{vector}")
     end
+  end
 
+  private
     def input_entity
       Entity.instances_with(:@input).first
     end
@@ -28,4 +29,5 @@ class MovementInputSystem
     def movement_entities
       Entity.instances_with(:@movement)
     end
+  end
 end

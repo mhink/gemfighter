@@ -1,4 +1,5 @@
-class LogSystem
+module LogSystem
+  class << self
   def run!
     message_entities.each do |ent|
       ent.messages.each do |msg|
@@ -12,4 +13,5 @@ class LogSystem
     def message_entities
       Entity.instances_with(:@messages)
     end
+  end
 end

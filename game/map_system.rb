@@ -1,4 +1,5 @@
-class MapSystem
+module MapSystem
+  class << self
   def run!
     size = window_entity.size_tiles
 
@@ -19,4 +20,5 @@ class MapSystem
     def position_movement_entities
       Entity.instances_with(:@position, :@movement)
     end
+  end
 end
