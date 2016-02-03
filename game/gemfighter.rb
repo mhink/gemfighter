@@ -4,6 +4,7 @@ require 'shutdown_system'
 require 'window_system'
 require 'input_system'
 require 'movement_input_system'
+require 'map_system'
 require 'movement_system'
 require 'log_system'
 
@@ -16,15 +17,18 @@ class Gemfighter < Game
     puts "Initializing entities..."
     Gosu::Image.load_tiles(RES_DIR.join("onoff-16.png").to_s, 16, 16).each_with_index do |img, ix|
       # Create an Entity for each tile
-      Entity.new(index: ix, tile: img)
+      Entity.new(tile_index: ix, 
+                 tile_image: img)
     end
 
     # The input channel!
     Entity.new(input: nil)
 
     # A little proto-player entity.
-    Entity.new(movement: nil,
-               position: Point[1,1])
+    Entity.new(visible:    true,
+               tile_index: 0,
+               movement:   nil,
+               position:   Point[1,1])
 
     # The window itself
     Entity.new(window:     nil,

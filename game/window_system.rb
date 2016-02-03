@@ -19,11 +19,13 @@ class WindowSystem
   # The question is, should this be a system-level distinction
   # or a method-level distinction?
   def run!
-    on_tile = tile_entities[0].tile
+    drawables = drawable_entities
+    tiles = tile_entities
 
-    position_entities.each do |entity|
+    drawables.each do |entity|
       x, y = entity.position.to_a
-      on_tile.draw(entity.position.x * 16, entity.position.y * 16, 0)
+      tile_image = tiles[entity.tile_index].tile_image
+      tile_image.draw(entity.position.x * 16, entity.position.y * 16, 0)
     end
   end
 
@@ -33,14 +35,16 @@ class WindowSystem
 
   private
     def tile_entities
-      Entity.instances_with(:@index, :@tile)
+      Entity.instances_with(:@tile_index, :@tile_image).sort_by do |entity| 
+        entity.tile_index
+      end
     end
 
     def window_entity
       Entity.instances_with(:@size, :@window).first
     end
 
-    def position_entities
-      Entity.instances_with(:@position)
+    def drawable_entities
+      Entity.instances_with(:@visible, :@tile_index, :@position)
     end
 end

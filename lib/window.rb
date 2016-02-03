@@ -48,8 +48,7 @@ class Window < Gosu::Window
   end
 
   def run_game!
-    char = button_id_to_char(@active_key)
-    scene_result = @update_callback.try(:call, char)
+    scene_result = @update_callback.try(:call)
     @needs_redraw = (scene_result ? true : false)
   end
 
@@ -64,7 +63,7 @@ class Window < Gosu::Window
   end
 
   def draw
-    @draw_callback.try(:call, self)
+    @draw_callback.try(:call)
     @needs_redraw = false
   end
 end
