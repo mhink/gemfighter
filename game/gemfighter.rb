@@ -3,7 +3,7 @@ require 'game'
 require 'shutdown_system'
 require 'window_system'
 require 'input_system'
-require 'movement_input_system'
+require 'player_system'
 require 'map_system'
 require 'movement_system'
 require 'log_system'
@@ -14,18 +14,9 @@ class Gemfighter < Game
   def initialize
     super
 
-    # A little proto-player entity.
-    Entity.new(visible:    true,
-               tile_index: 0,
-               scale: Vector[2,2],
-               movement:   nil,
-               position:   Point[1,1])
-
-    InputSystem.init!
-
     WindowSystem.on_update do
       InputSystem.run!
-      MovementInputSystem.run!
+      PlayerSystem.run!
       MapSystem.run!
       MovementSystem.run!
       LogSystem.run!
@@ -40,6 +31,8 @@ class Gemfighter < Game
 
   protected
     def start
+      InputSystem.init!
+      PlayerSystem.init!
       WindowSystem.start
     end
 
