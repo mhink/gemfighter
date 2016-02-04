@@ -1,16 +1,6 @@
 module PlayerSystem
   class << self
-    def init!
-      # A little proto-player entity.
-      Entity.new("player",
-        visible:    true,
-        tile_index: 0,
-        scale: Vector[2,2],
-        movement:   nil,
-        position:   Point[1,1])
-    end
-
-    def run!
+    def move_player!
       case input_entity.input
       when "h" then move_by(Vector[-1,0])
       when "j" then move_by(Vector[0,1])

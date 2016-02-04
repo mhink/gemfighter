@@ -6,7 +6,7 @@ module InputSystem
                input: nil)
   end
 
-  def run!
+  def handle_input!
     input = window_entity.window.active_input
 
     input_entities.each do |entity|

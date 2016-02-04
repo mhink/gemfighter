@@ -13,8 +13,9 @@ class Game
   rescue SystemExit
     puts "SystemExit"
   rescue Exception => ex
-    puts ex
-    puts ex.backtrace.first(5)
+    Entity.dump_debug!
+    STDERR.puts ex
+    STDERR.puts ex.backtrace.first(5)
   ensure
     stop
     puts "Closed 'gemfighter' at #{Time.now.strftime("%s")}"

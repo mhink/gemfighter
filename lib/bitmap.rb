@@ -47,6 +47,12 @@ class Bitmap
     bm
   end
 
+  def ~
+    bm = Bitmap.new(size)
+    bm.instance_variable_set(:@bitset, ~@bitset)
+    bm
+  end
+
   def in_bounds?(*args)
     x,y= convert_args(*args)
     (x >= 0) && (x < width) &&
@@ -113,6 +119,7 @@ class Bitmap
 
     def to_index(*args)
       unless in_bounds?(*args)
+        x,y= convert_args(*args)
         raise IndexError.new("Provided index [#{x},#{y}] is not within [0,0] <= index < [#{width},#{height}]")
       end
       x,y = convert_args(*args)

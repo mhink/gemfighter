@@ -1,6 +1,6 @@
 module ShutdownSystem
   class << self
-    def run!
+    def check_for_game_actions!
       case input_entity.input
       when "q" then throw(:game_end)
       when "d" then Entity.dump_debug!

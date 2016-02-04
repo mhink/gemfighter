@@ -57,11 +57,23 @@ class Entity < Object
   end
 
   def initialize(name=nil, **kwargs)
+    self.set(**kwargs)
+    Entity.register(name, self)
+  end
+
+  def set(**kwargs)
     kwargs.each do |k, v| 
       self.instance_variable_set("@#{k}", v)
     end
+    self
+  end
 
-    Entity.register(name, self)
+  def has? cname
+    if cname.to_s.start_with? "@"
+      self.instance_variable_defined?(cname)
+    else
+      self.instance_variable_defined?("@#{cname}")
+    end
   end
 
   def method_missing(method_name, *args, **kwargs, &block)

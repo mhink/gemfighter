@@ -10,17 +10,18 @@ module WindowSystem
       @on_draw_callback = block
     end
 
-    def start
+    def init!
       window_size = Size[800, 600]
       window = Window.new(size: window_size)
-      window.on_update(&@on_update_callback)
-      window.on_draw(&@on_draw_callback)
-
       Entity.new("window",
                  window:     window,
-                 size:       window_size, 
-                 grid_size:  Size[32,32],
-                 size_tiles: Size[25,18])
+                 size:       window_size)
+    end
+
+    def start
+      window = Entity.find("window").window
+      window.on_update(&@on_update_callback)
+      window.on_draw(&@on_draw_callback)
       window.show
     end
 
