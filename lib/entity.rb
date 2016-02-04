@@ -2,7 +2,7 @@ class Entity < Object
   class << self
     include Enumerable
 
-    def instances_with(*ivars_we_want)
+    def find_by(*ivars_we_want)
       # TODO: accept a looser syntax from args
 
       instances.find_all do |instance|
@@ -13,22 +13,42 @@ class Entity < Object
       end
     end
 
+    def find(name)
+      named_instances[name]
+    end
+
     def each(&block)
       instances.each(&block)
     end
 
+    def register(name=nil, entity)
+      if name
+        if named_instances.has_key? name
+          raise "Cannot create an Entity with duplicate name!"
+        else
+          named_instances[name]= entity
+        end
+      end
+
+      instances << entity
+    end
+
     private
+      def named_instances
+        @named_instances ||= Hash.new
+      end
+
       def instances
         @instances ||= Set.new
       end
   end
 
-  def initialize(**kwargs)
+  def initialize(name=nil, **kwargs)
     kwargs.each do |k, v| 
       self.instance_variable_set("@#{k}", v)
     end
 
-    Entity.send(:instances) << self
+    Entity.register(name, self)
   end
 
   def method_missing(method_name, *args, **kwargs, &block)

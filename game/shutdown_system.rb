@@ -1,14 +1,14 @@
 module ShutdownSystem
   class << self
-  def run!
-    if shutdown_entity.input == "q"
-      throw(:game_end)
+    def run!
+      if input_entity.input == "q"
+        throw(:game_end)
+      end
     end
-  end
 
-  private
-    def shutdown_entity
-      Entity.instances_with(:@input).first
-    end
+    private
+      def input_entity
+        Entity.find("input")
+      end
   end
 end

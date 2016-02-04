@@ -11,23 +11,15 @@ module WindowSystem
   end
 
   def start
-    wnd = Window.new(size: window_entity.size)
-    window_entity.window = wnd
-    wnd.on_update(&@on_update_callback)
-    wnd.on_draw(&@on_draw_callback)
-    wnd.show
+    init_window!
+    init_tiles!
+    window_entity.window.show
   end
 
-  # Perhaps #run! isn't as great for these methods, since
-  # we need to distinguish between 'stuff that happens during
-  # update' and 'stuff that happens during rendering'.
-  #
-  # The question is, should this be a system-level distinction
-  # or a method-level distinction?
   def run!
-    drawables = drawable_entities
-    tiles = tile_entities
     window = window_entity
+    tiles = tile_entities
+    drawables = drawable_entities
 
     font = Gosu::Font.new(12, name: "Arial")
 
@@ -47,18 +39,44 @@ module WindowSystem
   end
 
   private
+    def init_window!
+      window_size = Size[800, 600]
+      window = Window.new(size: window_size)
+      window.on_update(&@on_update_callback)
+      window.on_draw(&@on_draw_callback)
+
+      Entity.new("window",
+                 window:     window,
+                 size:       window_size, 
+                 grid_size:  Size[32,32],
+                 size_tiles: Size[25,18])
+    end
+
+    def init_tiles!
+      tiles = Gosu::Image.load_tiles(
+          RES_DIR.join("tiled-icons-16x16.png").to_s, 
+          16, 16,
+          retro: true)
+
+      tiles.each_with_index do |img, ix|
+        # Create an Entity for each tile
+        Entity.new(tile_index: ix, 
+                   tile_image: img)
+      end
+    end
+
     def tile_entities
-      Entity.instances_with(:@tile_index, :@tile_image).sort_by do |entity| 
+      Entity.find_by(:@tile_index, :@tile_image).sort_by do |entity| 
         entity.tile_index
       end
     end
 
     def window_entity
-      Entity.instances_with(:@size, :@window).first
+      Entity.find("window")
     end
 
     def drawable_entities
-      Entity.instances_with(:@visible, :@tile_index, :@position)
+      Entity.find_by(:@visible, :@tile_index, :@position)
     end
   end
 end

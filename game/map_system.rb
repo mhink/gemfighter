@@ -14,11 +14,11 @@ module MapSystem
 
   private
     def window_entity
-      Entity.instances_with(:@window, :@size_tiles).first
+      Entity.find("window")
     end
 
     def position_movement_entities
-      Entity.instances_with(:@position, :@movement)
+      Entity.find_by(:@position, :@movement)
     end
   end
 end

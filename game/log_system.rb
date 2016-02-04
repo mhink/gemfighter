@@ -11,7 +11,7 @@ module LogSystem
 
   private
     def message_entities
-      Entity.instances_with(:@messages)
+      Entity.find_by(:@messages)
     end
   end
 end

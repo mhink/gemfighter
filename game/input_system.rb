@@ -1,5 +1,11 @@
 module InputSystem
   class << self
+
+  def init!
+    Entity.new("input", 
+               input: nil)
+  end
+
   def run!
     input = window_entity.window.active_input
 
@@ -10,11 +16,11 @@ module InputSystem
 
   private
     def window_entity
-      Entity.instances_with(:@window).first
+      Entity.find("window")
     end
 
     def input_entities
-      Entity.instances_with(:@input)
+      Entity.find_by(:@input)
     end
   end
 end

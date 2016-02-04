@@ -14,21 +14,6 @@ class Gemfighter < Game
   def initialize
     super
 
-    tiles = Gosu::Image.load_tiles(
-        RES_DIR.join("tiled-icons-16x16.png").to_s, 
-        16, 16,
-        retro: true).zip([:guy, :rat, :wall, :sign, :meat])
-
-    tiles.each_with_index do |(img, name), ix|
-      # Create an Entity for each tile
-      Entity.new(tile_index: ix, 
-                 tile_image: img,
-                 tile_name: name)
-    end
-
-    # The input channel!
-    Entity.new(input: nil)
-
     # A little proto-player entity.
     Entity.new(visible:    true,
                tile_index: 0,
@@ -36,11 +21,7 @@ class Gemfighter < Game
                movement:   nil,
                position:   Point[1,1])
 
-    # The window itself
-    Entity.new(window:     nil,
-               grid_size:  Size[32,32],
-               size:       Size[800,600], 
-               size_tiles: Size[25,18])
+    InputSystem.init!
 
     WindowSystem.on_update do
       InputSystem.run!

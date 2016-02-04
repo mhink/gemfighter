@@ -14,7 +14,7 @@ module MovementSystem
 
   private
     def position_movement_entities
-      Entity.instances_with(:@position, :@movement)
+      Entity.find_by(:@position, :@movement)
     end
   end
 end

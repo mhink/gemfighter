@@ -23,11 +23,11 @@ module MovementInputSystem
 
   private
     def input_entity
-      Entity.instances_with(:@input).first
+      Entity.find("input")
     end
 
     def movement_entities
-      Entity.instances_with(:@movement)
+      Entity.find_by(:@movement)
     end
   end
 end
