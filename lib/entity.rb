@@ -1,6 +1,19 @@
+require 'pp'
+
 class Entity < Object
   class << self
     include Enumerable
+
+    def dump_debug!
+      named_instances.each do |name, entity|
+        STDERR.puts "#{name} => #{entity.to_s}"
+      end
+
+      instances.each do |entity|
+        PP.pp(entity, STDERR)
+      end
+      STDERR.puts "---"
+    end
 
     def find_by(*ivars_we_want)
       # TODO: accept a looser syntax from args

@@ -7,6 +7,7 @@ require 'player_system'
 require 'map_system'
 require 'movement_system'
 require 'log_system'
+require 'drawing_system'
 
 include Geometry
 
@@ -25,7 +26,7 @@ class Gemfighter < Game
     end
 
     WindowSystem.on_draw do
-      WindowSystem.run!
+      DrawingSystem.run!
     end
   end
 
@@ -33,6 +34,7 @@ class Gemfighter < Game
     def start
       InputSystem.init!
       PlayerSystem.init!
+      DrawingSystem.init!
       WindowSystem.start
     end
 
