@@ -18,7 +18,6 @@ class Gemfighter < Game
     @window = Window.new(size: Size[800,600])
 
     Entity.new("input", 
-      window: @window,
       input: nil)
 
     player = Entity.new("player",

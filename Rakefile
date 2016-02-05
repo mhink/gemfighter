@@ -14,7 +14,7 @@ task :test do
 end
 
 task :console do
-  e = Entity.new(foo: "bar")
+  game = Gemfighter.new
   binding.pry
 end
 
