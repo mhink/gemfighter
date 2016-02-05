@@ -16,6 +16,12 @@ class Bitmap
     end
   end
 
+  def from_s(bitset_str)
+    raise IndexError unless (width * height) == bitset_str.length
+    @bitset= Bitset.from_s(bitset_str)
+    self
+  end
+
   def cardinality
     @bitset.cardinality
   end
@@ -65,6 +71,13 @@ class Bitmap
 
   def clear(*args)
     self[*args]= false
+  end
+
+
+  def edge?(*args)
+    x,y= convert_args(*args)
+    (x == 0) || (x == width - 1) ||
+    (y == 0) || (y == height - 1)
   end
 
   def [](*args)
