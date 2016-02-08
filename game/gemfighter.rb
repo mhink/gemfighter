@@ -5,6 +5,7 @@ require 'player_system'
 require 'map_system'
 require 'log_system'
 require 'drawing_system'
+require 'ai_system'
 
 class Gemfighter < Game
   def initialize
@@ -15,20 +16,31 @@ class Gemfighter < Game
 
     Entity.new("input", input: nil)
     Entity.new("player")
-    Entity.new("walls")
     Entity.new("map")
     Entity.new("render_root")
+
   end
 
   def start
     MapSystem.init!
     PlayerSystem.init!
     DrawingSystem.init!
+    AiSystem.init!
+
+    rat = Entity.new(
+      position: Point[8,8],
+      movement: nil,
+      tile_index: 1,
+      ai_method: :rat_ai,
+    )
+
+    Entity.find("map").entity_children << rat
 
     @window.on_update do
       Entity.find("input").input = @window.active_input
 
       PlayerSystem.move_player!
+      AiSystem.run_ai!
       MapSystem.check_entity_movement!
       LogSystem.write_messages_to_log!
       ShutdownSystem.check_for_game_actions!
