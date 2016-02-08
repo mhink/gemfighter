@@ -27,15 +27,6 @@ class Gemfighter < Game
     DrawingSystem.init!
     AiSystem.init!
 
-    rat = Entity.new(
-      position: Point[8,8],
-      movement: nil,
-      tile_index: 1,
-      ai_method: :rat_ai,
-    )
-
-    Entity.find("map").entity_children << rat
-
     @window.on_update do
       Entity.find("input").input = @window.active_input
 
