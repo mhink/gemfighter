@@ -1,5 +1,12 @@
 module PlayerSystem
   class << self
+    def init!
+      player = Entity.find("player").set(
+        position: Point[1,1],
+        movement: nil
+      )
+    end
+
     def move_player!
       case input_entity.input
       when "h" then move_by(Vector[-1,0])

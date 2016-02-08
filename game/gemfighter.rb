@@ -6,10 +6,6 @@ require 'map_system'
 require 'log_system'
 require 'drawing_system'
 
-include Geometry
-
-WALLS = "1111111111111111111111111100000000000000000000000110000000000000000000000011000000000000000000000001100000000000000000000000110000100000000000000000011000000000000000000000001100000000000000000000000110000000000000000000000011000000000000000000000001100000000000000000000000110000000000000000000000011000000000000000000000001100000000000000000000000110000000000000000000000011000000000000000000000001100000000000000000000000110000000000000000000000011111111111111111111111111"
-
 class Gemfighter < Game
   def initialize
     super
@@ -17,36 +13,17 @@ class Gemfighter < Game
 
     @window = Window.new(size: Size[800,600])
 
-    Entity.new("input", 
-      input: nil)
-
-    player = Entity.new("player",
-      tile_index: 0,
-      position: Point[1,1],
-      movement: nil,
-      render_with: :draw_map_entity)
-
-    walls = Entity.new(
-      tile_index:  2,
-      bitmap:      Bitmap[25,19].from_s(WALLS),
-      render_with: :draw_bitmap)
-
-    map = Entity.new("map",
-      size:             Size[25,19],
-      grid_size:        Size[32,32],
-      wall_tile_index:  2,
-      bitmap:           Bitmap[25,19],
-      entity_children:  [player],
-      bitmap_children:  [walls],
-      render_with:      :draw_map,
-      render_children:  [walls, player])
-
-    Entity.new("render_root",
-      render_children: [map])
+    Entity.new("input", input: nil)
+    Entity.new("player")
+    Entity.new("walls")
+    Entity.new("map")
+    Entity.new("render_root")
   end
 
   def start
     MapSystem.init!
+    PlayerSystem.init!
+    DrawingSystem.init!
 
     @window.on_update do
       Entity.find("input").input = @window.active_input

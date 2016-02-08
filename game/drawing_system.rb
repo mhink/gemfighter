@@ -1,8 +1,24 @@
 module DrawingSystem
   class << self
+    def init!
+      player = Entity.find("player").set(
+        tile_index: 0
+      )
+
+      map = Entity.find("map").set(
+        grid_size:       Size[32,32],
+        render_with:     :draw_map,
+      )
+
+      Entity.find("render_root").set(
+        render_children: [map]
+      )
+    end
+
     def draw!
       draw_entity(Entity.find("render_root"), nil)
     end
+
     private
       def draw_entity(entity, parent)
         if entity.has?(:render_with)
@@ -17,22 +33,22 @@ module DrawingSystem
       end
 
       def draw_map(entity, parent)
-        @was_drawn = Bitmap.new(entity.size)
-      end
-
-      def draw_bitmap(entity, parent)
         tiles = Entity.find_by(:@tile_image, :@tile_index).sort_by(&:tile_index) 
-        tile  = tiles[entity.tile_index]
-        entity.bitmap.each do |b, x, y|
-          next unless b
-          draw_tile(tile, [x,y], parent.grid_size)
-        end
-      end
+        gs    = entity.grid_size
+        wbm   = entity.wall_bitmap
+        ents  = entity.entity_children
 
-      def draw_map_entity(entity, parent)
-        tiles = Entity.find_by(:@tile_image, :@tile_index).sort_by(&:tile_index)
-        tile = tiles[entity.tile_index]
-        draw_tile(tile, entity.position, parent.grid_size)
+        @was_drawn = Bitmap[entity.size]
+
+        wbm.each do |b, x, y|
+          next unless b
+          draw_tile(tiles[2], [x,y], gs)
+        end
+
+        ents.each do |entity|
+          tile = tiles[entity.tile_index]
+          draw_tile(tile, entity.position, gs)
+        end
       end
 
       def draw_tile(tile, pos, grid_size)

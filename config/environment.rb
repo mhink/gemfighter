@@ -6,6 +6,8 @@ require 'pry'
 require 'active_support'
 require 'active_support/core_ext'
 
+include Geometry
+
 BASE_DIR = Pathname.new(File.dirname(__FILE__)).join("..")
 
 LIB_DIR  = BASE_DIR.join("lib")
