@@ -6,6 +6,7 @@ module AiSystem
 
     def run_ai!
       Entity.find_by(:@ai_method).each do |entity|
+        entity.movement= nil if entity.has? :movement
         self.send(entity.ai_method.to_sym, entity)
       end
     end

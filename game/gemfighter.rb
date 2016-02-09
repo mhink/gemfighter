@@ -17,8 +17,6 @@ class Gemfighter < Game
     Entity.new("input", input: nil)
     Entity.new("player")
     Entity.new("map")
-    Entity.new("render_root")
-
   end
 
   def start
@@ -27,7 +25,7 @@ class Gemfighter < Game
     DrawingSystem.init!
     AiSystem.init!
 
-    @window.on_update do
+    @window.on_input = Proc.new do
       Entity.find("input").input = @window.active_input
 
       PlayerSystem.move_player!
@@ -35,10 +33,15 @@ class Gemfighter < Game
       MapSystem.check_entity_movement!
       LogSystem.write_messages_to_log!
       ShutdownSystem.check_for_game_actions!
+      DrawingSystem.prepare_tweens!
+    end
+
+    @window.on_update = Proc.new do
+      DrawingSystem.update_tweens!
       true
     end
 
-    @window.on_draw do
+    @window.on_draw = Proc.new do
       DrawingSystem.draw!
     end
 

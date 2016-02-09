@@ -8,6 +8,7 @@ module PlayerSystem
     end
 
     def move_player!
+      player_entity.movement= nil
       case input_entity.input
       when "h" then move_by(Vector[-1,0])
       when "j" then move_by(Vector[0,1])

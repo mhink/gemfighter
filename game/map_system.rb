@@ -20,6 +20,8 @@ module MapSystem
 
     def check_entity_movement!
       @map.entity_children.each do |entity|
+        next if entity.movement.nil?
+
         oldpos = entity.position
         newpos = entity.position + entity.movement
         ebm = @map.entity_bitmap
@@ -30,9 +32,9 @@ module MapSystem
           ebm[oldpos]= false
           ebm[newpos]= true
           entity.position += entity.movement
+        else
+          entity.movement = nil
         end
-
-        entity.movement= nil
       end
     end
   end
