@@ -2,6 +2,7 @@ module ShutdownSystem
   class << self
     def check_for_game_actions!
       case input_entity.input
+      when "s" then save_and_quit
       when "q" then throw(:game_end)
       when "d" then Entity.dump_debug!
       when "f" then spawn_rat
@@ -9,6 +10,9 @@ module ShutdownSystem
     end
 
     private
+      def save_and_quit
+      end
+
       def spawn_rat
         prng = Random.new
 

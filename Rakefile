@@ -1,7 +1,6 @@
 #! /usr/bin/env ruby
 
 require_relative "config/environment"
-require 'gemfighter'
 require 'rdoc/task'
 
 RDoc::Task.new do |rdoc|
@@ -14,7 +13,6 @@ task :test do
 end
 
 task :console do
-  game = Gemfighter.new
   binding.pry
 end
 

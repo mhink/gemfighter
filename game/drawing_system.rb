@@ -1,14 +1,12 @@
 module DrawingSystem
   class << self
     def init!
-      player = Entity.find("player").set(
-        tile_index: 0
-      )
+      @tiles = Gosu::Image.load_tiles(
+        RES_DIR.join("tiled-icons-16x16.png").to_s, 
+        16, 16,
+        retro: true)
 
-      map = Entity.find("map").set(
-        grid_size:       Size[32,32],
-        render_with:     :draw_map,
-      )
+      @tile_scale = Size[2,2]
     end
 
     N_STEPS = 5
@@ -17,7 +15,6 @@ module DrawingSystem
       @drawables.clear
 
       map   = Entity.find("map")
-      tiles = Entity.find_by(:@tile_image, :@tile_index).sort_by(&:tile_index) 
       gs    = map.grid_size
       wbm   = map.wall_bitmap
       ents  = map.entity_children
@@ -25,7 +22,7 @@ module DrawingSystem
       wbm.each do |b, x, y|
         next unless b
         @drawables << {
-          tile:       tiles[2],
+          tile_index: 2,
           next_point: Point[x,y] * gs,
         }
       end
@@ -33,46 +30,18 @@ module DrawingSystem
       ents.each do |entity|
         if entity.movement.nil?
           @drawables << {
-            tile:       tiles[entity.tile_index],
-            next_point: entity.position * gs
+            tile_index: entity.tile_index,
+            next_point: (entity.position * gs)
           }
           next
         end
 
-        oldpos = entity.position - entity.movement
-        newpos = entity.position
-
-        x_step = ((newpos.x - oldpos.x) / N_STEPS).to_f
-        y_step = ((newpos.y - oldpos.y) / N_STEPS).to_f
-
-
-        x_steps = if x_step == 0
-                    [newpos.x].lazy.cycle(N_STEPS).map(&:to_f).to_a
-                  elsif x_step < 0
-                    (newpos.x..oldpos.x).step(-x_step).to_a.reverse
-                  elsif x_step > 0
-                    (oldpos.x..newpos.x).step(x_step).to_a
-                  end
-
-        y_steps = if y_step == 0
-                    [newpos.y].lazy.cycle(N_STEPS).map(&:to_f).to_a
-                  elsif y_step < 0
-                    (newpos.y..oldpos.y).step(-y_step).to_a.reverse
-                  elsif y_step > 0
-                    (oldpos.y..newpos.y).step(y_step).to_a
-                  end
-
-
-        points = N_STEPS.times.map do |i|
-          Point[x_steps[i], y_steps[i]] * gs
-        end
-
-        unless points.include? newpos
-          points << (newpos * gs)
-        end
+        b = entity.position - entity.movement
+        m = entity.movement / N_STEPS.to_f
+        points = (N_STEPS + 1).times.map { |t| (b + (m*t)) * gs }
 
         @drawables << {
-          tile:         tiles[entity.tile_index],
+          tile_index:   entity.tile_index,
           next_point:   points.shift,
           tween_points: points
         }
@@ -91,15 +60,15 @@ module DrawingSystem
     def draw!
       prepare_tweens! if @drawables.nil?
       @drawables.each do |drawable|
-        draw_tile(drawable[:tile], drawable[:next_point])
+        draw_tile(drawable[:tile_index], drawable[:next_point])
       end
     end
 
     private
-      def draw_tile(tile, pos)
+      def draw_tile(ix, pos)
         x, y   = pos.to_a
-        sx, sy = (tile.scale || [1,1]).to_a
-        img    = tile.tile_image
+        sx, sy = @tile_scale.to_a
+        img    = @tiles[ix]
         img.draw(x, y, 0, sx, sy)
       end
   end

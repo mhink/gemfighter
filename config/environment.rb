@@ -17,4 +17,4 @@ RES_DIR  = BASE_DIR.join("res")
 $LOAD_PATH.unshift(LIB_DIR) unless $LOAD_PATH.include?(LIB_DIR)
 $LOAD_PATH.unshift(GAME_DIR) unless $LOAD_PATH.include?(GAME_DIR)
 
-
+require 'gemfighter'

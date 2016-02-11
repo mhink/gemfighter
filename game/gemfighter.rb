@@ -8,20 +8,22 @@ require 'drawing_system'
 require 'ai_system'
 
 class Gemfighter < Game
-  def initialize
-    super
-    init_tiles!
+  WALLS = "1111111111111111111111111100000000000000000000000110000000000000000000000011000000000000000000000001100000000000000000000000110000100000000000000000011000000000000000000000001100000000000000000000000110000000000000000000000011000000000000000000000001100000000000000000000000110000000000000000000000011000000000000000000000001100000000000000000000000110000000000000000000000011000000000000000000000001100000000000000000000000110000000000000000000000011111111111111111111111111"
+  MAP_SIZE= Size[25,19]
+
+  def initialize(save_file=nil)
+    super()
 
     @window = Window.new(size: Size[800,600])
 
-    Entity.new("input", input: nil)
-    Entity.new("player")
-    Entity.new("map")
+    if save_file
+      load_from_save! save_file
+    else
+      load_from_nothing!
+    end
   end
 
   def start
-    MapSystem.init!
-    PlayerSystem.init!
     DrawingSystem.init!
     AiSystem.init!
 
@@ -53,17 +55,30 @@ class Gemfighter < Game
   end
 
   private
-  def init_tiles!
-    tiles = Gosu::Image.load_tiles(
-        RES_DIR.join("tiled-icons-16x16.png").to_s, 
-        16, 16,
-        retro: true)
-
-    tiles.each_with_index do |img, ix|
-      # Create an Entity for each tile
-      Entity.new(tile_index: ix, 
-                 tile_image: img,
-                 scale:      Vector[2,2])
+    def load_from_save!(save_filename)
+      Entity.load(save_filename)
     end
-  end
+
+    def load_from_nothing!
+      player = Entity.new("player",
+        position: Point[1,1],
+        movement: nil,
+        tile_index: 0)
+
+      rat = Entity.new(
+        position:     Point[9,9],
+        movement:     nil,
+        tile_index:   1,
+        ai_method:    :rat_ai)
+
+      Entity.new("map",
+        size:            MAP_SIZE,
+        entity_bitmap:   Bitmap[MAP_SIZE],
+        wall_bitmap:     Bitmap[MAP_SIZE].from_s(WALLS),
+        entity_children: [player, rat],
+        grid_size:       Size[32,32],
+        render_with:     :draw_map)
+
+      Entity.new("input", input: nil)
+    end
 end

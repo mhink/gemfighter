@@ -1,12 +1,5 @@
 module PlayerSystem
   class << self
-    def init!
-      player = Entity.find("player").set(
-        position: Point[1,1],
-        movement: nil
-      )
-    end
-
     def move_player!
       player_entity.movement= nil
       case input_entity.input
