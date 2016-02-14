@@ -1,4 +1,6 @@
 module DrawingSystem
+  N_STEPS = 5
+
   class << self
     def init!
       @tiles = Gosu::Image.load_tiles(
@@ -9,47 +11,63 @@ module DrawingSystem
       @tile_scale = Size[2,2]
     end
 
-    N_STEPS = 5
-    def prepare_tweens!
+    def prepare_drawables!
       @drawables ||= []
       @drawables.clear
 
-      map   = Entity.find("map")
-      gs    = map.grid_size
-      wbm   = map.wall_bitmap
-      ents  = map.entity_children
+      walls = Entity.find("walls")
+      actors = Entity.find("actors")
+      items = Entity.find("items")
 
-      wbm.each do |b, x, y|
+      self.send(walls.draw_with, walls)
+      self.send(items.draw_with, items)
+      self.send(actors.draw_with, actors)
+    end
+
+    def draw_walls(layer)
+      layer.bitmap.each do |b, x, y|
         next unless b
         @drawables << {
           tile_index: 2,
-          next_point: Point[x,y] * gs,
-        }
-      end
-
-      ents.each do |entity|
-        if entity.movement.nil?
-          @drawables << {
-            tile_index: entity.tile_index,
-            next_point: (entity.position * gs)
-          }
-          next
-        end
-
-        b = entity.position - entity.movement
-        m = entity.movement / N_STEPS.to_f
-        points = (N_STEPS + 1).times.map { |t| (b + (m*t)) * gs }
-
-        @drawables << {
-          tile_index:   entity.tile_index,
-          next_point:   points.shift,
-          tween_points: points
+          next_point: Point[x, y] * layer.grid_size,
         }
       end
     end
 
-    def update_tweens!
-      prepare_tweens! if @drawables.nil?
+    def draw_actors(layer)
+      entities_for_layer(layer).each do |actor|
+        if actor.movement.nil?
+          @drawables << {
+            tile_index: actor.tile_index,
+            next_point: (actor.position * layer.grid_size)
+          }
+        else
+          b = actor.position - actor.movement
+          m = actor.movement / N_STEPS.to_f
+          gs = layer.grid_size
+          points = (N_STEPS + 1).times.map { |t| (b + (m*t)) * gs }
+
+          @drawables << {
+            tile_index:   actor.tile_index,
+            next_point:   points.shift,
+            tween_points: points
+          }
+          actor.movement= nil
+        end
+      end
+    end
+
+    def draw_items(layer)
+      entities_for_layer(layer).each do |item|
+        @drawables << {
+          tile_index: item.tile_index,
+          next_point: (item.position * layer.grid_size)
+        }
+      end
+    end
+
+    def next_frame!
+      prepare_drawables! if @drawables.nil?
       @drawables.each do |drawable|
         if drawable.has_key?(:tween_points) && !drawable[:tween_points].empty?
           drawable[:next_point] = drawable[:tween_points].shift
@@ -58,7 +76,7 @@ module DrawingSystem
     end
 
     def draw!
-      prepare_tweens! if @drawables.nil?
+      prepare_drawables! if @drawables.nil?
       @drawables.each do |drawable|
         draw_tile(drawable[:tile_index], drawable[:next_point])
       end
@@ -70,6 +88,12 @@ module DrawingSystem
         sx, sy = @tile_scale.to_a
         img    = @tiles[ix]
         img.draw(x, y, 0, sx, sy)
+      end
+
+      def entities_for_layer(layer)
+        Entity.find_by(:@layer_name).select do |entity|
+          entity.layer_name == layer.name
+        end
       end
   end
 end

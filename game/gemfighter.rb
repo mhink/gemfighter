@@ -21,12 +21,13 @@ class Gemfighter < Game
     else
       load_from_nothing!
     end
+
+    DrawingSystem.init!
+    AiSystem.init!
+    MapSystem.init!
   end
 
   def start
-    DrawingSystem.init!
-    AiSystem.init!
-
     @window.on_input = Proc.new do
       Entity.find("input").input = @window.active_input
 
@@ -35,11 +36,11 @@ class Gemfighter < Game
       MapSystem.check_entity_movement!
       LogSystem.write_messages_to_log!
       ShutdownSystem.check_for_game_actions!
-      DrawingSystem.prepare_tweens!
+      DrawingSystem.prepare_drawables!
     end
 
     @window.on_update = Proc.new do
-      DrawingSystem.update_tweens!
+      DrawingSystem.next_frame!
       true
     end
 
@@ -60,24 +61,39 @@ class Gemfighter < Game
     end
 
     def load_from_nothing!
-      player = Entity.new("player",
-        position: Point[1,1],
-        movement: nil,
-        tile_index: 0)
-
-      rat = Entity.new(
-        position:     Point[9,9],
+      Entity.new("player",
+        inventory:    [],
+        layer_name:   'actors',
+        position:     Point[1,1],
         movement:     nil,
-        tile_index:   1,
-        ai_method:    :rat_ai)
+        tile_index:   0)
 
-      Entity.new("map",
-        size:            MAP_SIZE,
-        entity_bitmap:   Bitmap[MAP_SIZE],
-        wall_bitmap:     Bitmap[MAP_SIZE].from_s(WALLS),
-        entity_children: [player, rat],
-        grid_size:       Size[32,32],
-        render_with:     :draw_map)
+      Entity.new("scroll",
+        layer_name:   'items',
+        position:     Point[1,2],
+        tile_index:   5)
+
+      Entity.new("scroll2",
+        layer_name:   'items',
+        position:     Point[1,3],
+        tile_index:   5)
+
+
+      Entity.new("walls",
+        draw_with:  :draw_walls,
+        grid_size:  Size[32,32],
+        bitmap:     Bitmap[MAP_SIZE].from_s(WALLS))
+
+      Entity.new("actors",
+        draw_with:  :draw_actors,
+        map_with:   :update_actors,
+        grid_size:  Size[32,32],
+        bitmap:     Bitmap[MAP_SIZE])
+
+      Entity.new("items",
+        draw_with:  :draw_items,
+        grid_size:  Size[32,32],
+        bitmap:     Bitmap[MAP_SIZE])
 
       Entity.new("input", input: nil)
     end

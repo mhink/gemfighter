@@ -35,11 +35,21 @@ class Entity < Object
       instances.each(&block)
     end
 
+    def destroy(entity)
+      name = named_instances.key(entity)
+      if name
+        named_instances.delete(name)
+      end
+
+      instances.delete(entity)
+    end
+
     def register(name=nil, entity)
       if name
         if named_instances.has_key? name
           raise "Cannot create an Entity with duplicate name!"
         else
+          entity.set(name: name)
           named_instances[name]= entity
         end
       end
@@ -67,6 +77,12 @@ class Entity < Object
       self.instance_variable_set("@#{k}", v)
     end
     self
+  end
+
+  def clear(cname)
+    if self.has?(cname)
+      self.remove_instance_variable(cname)
+    end
   end
 
   def has? cname
