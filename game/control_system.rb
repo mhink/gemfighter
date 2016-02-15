@@ -1,11 +1,11 @@
-module ShutdownSystem
+module ControlSystem
   class << self
-    def check_for_game_actions!
+    def handle_game_input!
       case input_entity.input
-      when "s" then spawn_scroll
       when "q" then throw(:game_end)
-      when "d" then Entity.dump_debug!
-      when "f" then spawn_rat
+      when "w" then spawn_scroll
+      when "e" then spawn_rat
+      when "r" then Entity.dump_debug!
       end
     end
 
@@ -34,6 +34,7 @@ module ShutdownSystem
           position: pos,
           tile_index: 5)
         items.bitmap.set(pos)
+        throw :next_input
       end
 
       def spawn_rat
@@ -61,6 +62,7 @@ module ShutdownSystem
           ai_method:    :rat_ai)
 
         actors.bitmap[pos]= true
+        throw :next_input
       end
 
       def input_entity

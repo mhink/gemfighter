@@ -56,10 +56,15 @@ module MapSystem
             item.position == newpos
           end
 
-          if actor.has?(:@inventory)
-            puts "Snagged an item!"
+          if actor.has?(:@card_state)
+            if item.has?(:@description)
+              STDERR.puts "Picked up #{item.description}."
+            else
+              STDERR.puts "Picked up an item."
+            end
+
             ibm[newpos]= false
-            actor.inventory << item
+            actor.card_state.deck << item
             item.clear :@layer_name
             item.clear :@position
           end

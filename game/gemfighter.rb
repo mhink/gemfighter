@@ -1,8 +1,9 @@
 require 'game'
 
-require 'shutdown_system'
+require 'control_system'
 require 'player_system'
 require 'map_system'
+require 'card_system'
 require 'log_system'
 require 'drawing_system'
 require 'ai_system'
@@ -31,11 +32,15 @@ class Gemfighter < Game
     @window.on_input = Proc.new do
       Entity.find("input").input = @window.active_input
 
-      PlayerSystem.move_player!
-      AiSystem.run_ai!
-      MapSystem.check_entity_movement!
-      LogSystem.write_messages_to_log!
-      ShutdownSystem.check_for_game_actions!
+      catch(:next_input) do
+        ControlSystem.handle_game_input!
+        PlayerSystem.handle_player_input!
+        AiSystem.run_ai!
+        CardSystem.update_decks!
+        MapSystem.check_entity_movement!
+        LogSystem.write_messages_to_log!
+      end
+
       DrawingSystem.prepare_drawables!
     end
 
@@ -61,23 +66,48 @@ class Gemfighter < Game
     end
 
     def load_from_nothing!
+      sword = Entity.new(
+        card_type: :weapon,
+        description: "a sword",
+        cooldown: 3,
+        cooldown_timer: -1
+      )
+
+      magic_missile = Entity.new(
+        card_type: :spell,
+        description: "magic missile",
+        contamination: 3,
+      )
+
+      cstate = Entity.new("player_card_state",
+        is_card_state:  true,
+        contaminated:   false,
+        action:         nil,
+        weapon:         sword,
+        spell:          magic_missile,
+        item:           nil,
+        deck: [])
+
       Entity.new("player",
-        inventory:    [],
+        card_state:   cstate,
         layer_name:   'actors',
         position:     Point[1,1],
         movement:     nil,
         tile_index:   0)
 
       Entity.new("scroll",
+        card_type:    :item,
+        description:  "a scroll with weird-looking symbols",
         layer_name:   'items',
         position:     Point[1,2],
         tile_index:   5)
 
       Entity.new("scroll2",
+        card_type:    :item,
+        description:  "a scroll with funny-looking symbols",
         layer_name:   'items',
         position:     Point[1,3],
         tile_index:   5)
-
 
       Entity.new("walls",
         draw_with:  :draw_walls,
