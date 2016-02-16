@@ -24,7 +24,9 @@ class Window < Gosu::Window
 
   def button_down(id)
     set_keypress(id)
-    @on_input.call
+    catch(:next_input) do
+      @on_input.call
+    end
   end
 
   def button_up(id)
@@ -49,7 +51,9 @@ class Window < Gosu::Window
     end
 
     @interval_elapsed += KEY_REPEAT_INTERVAL
-    @on_input.call
+    catch(:next_input) do
+      @on_input.call
+    end
   end
 
   def needs_redraw?

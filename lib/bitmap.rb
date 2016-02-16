@@ -98,6 +98,10 @@ class Bitmap
     end
   end
 
+  def active_coords
+    self.each.select { |b, *_| b }.map { |_,x,y|Point[x,y]}
+  end
+
   def neighbors_of(*args)
     x,y = convert_args(*args)
 

@@ -3,8 +3,6 @@ require 'bitmap'
 module MapSystem
   class << self
     def init!
-      actors_layer = Entity.find("actors")
-      items_layer  = Entity.find("items")
       actors = entities_for_layer(actors_layer)
       items  = entities_for_layer(items_layer)
 
@@ -17,16 +15,44 @@ module MapSystem
       end
     end
 
-    def check_entity_movement!
-      Entity.find_by(:@map_with).each do |layer|
-        self.send(layer.map_with, layer)
+    def clear_movement!
+      movables = Entity.find_by(:@movement).each do |entity|
+        entity.movement= nil
       end
     end
 
-    def update_actors(actors_layer)
-      walls_layer = Entity.find("walls")
-      items_layer = Entity.find("items")
-      actors = entities_for_layer(actors_layer)
+    def update_map_indexes!
+      maps = Entity.find_by(:@indexed_positions).each do |map|
+        removed      = []
+        non_matching = Hash.new{|h,k|h[k]=[]}
+
+        map.indexed_positions.each_pair do |pos, entities|
+          entities.delete_if do |entity|
+            entity.map_name != map.name
+          end
+
+          entities.each do |entity|
+            if entity.position != pos
+              non_matching[pos] << entity
+            end
+          end
+        end
+
+        non_matching.each do |pos, entities|
+          entities.each do |entity|
+            map[pos].delete(entity)
+            map[entity.position].push(entity)
+          end
+        end
+      end
+    end
+
+    def move_entities!
+      Entity.find_by(:@map_name).each do |entity|
+        next unless entity.has?(:@movement)
+
+        oldpos = entity.position
+      end
 
       actors.each do |actor|
         oldpos = actor.position
@@ -77,9 +103,9 @@ module MapSystem
     end
 
     private
-    def entities_for_layer(layer)
-      Entity.find_by(:@layer_name).select do |entity|
-        entity.layer_name == layer.name
+    def entities_for_map(map)
+      Entity.find_by(:@map_name).select do |entity|
+        entity.map_name == map.name
       end
     end
   end
