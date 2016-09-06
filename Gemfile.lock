@@ -14,13 +14,11 @@ GEM
     coderay (1.1.0)
     debug_inspector (0.0.2)
     geometry (6.5)
-    glfw3 (0.4.8)
     gosu (0.10.4)
     i18n (0.7.0)
     json (1.8.3)
     method_source (0.8.2)
     minitest (5.8.3)
-    opengl-core (2.0.1)
     pry (0.10.3)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -46,9 +44,7 @@ DEPENDENCIES
   activesupport
   bitset
   geometry
-  glfw3
   gosu
-  opengl-core
   pry
   pry-byebug
   pry-stack_explorer
@@ -56,4 +52,4 @@ DEPENDENCIES
   rdoc
 
 BUNDLED WITH
-   1.11.2
+   1.12.5
